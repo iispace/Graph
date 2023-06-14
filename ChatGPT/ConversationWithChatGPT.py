@@ -1,7 +1,7 @@
 import os
 import openai
 from datetime import datetime
-import ReadLastTotalTokens
+from Utility import ReadLastTotalTokensFromFile
 
 openai.api_key = os.getenv("OPENAI_API_KEY")  # Windows 환경변수에 저장된 API key 불러오는 방식
 #openai.api_key = "{MY_OPENAI_API_KEY}"       # OPENAI_API_KEY 문자열 직접 입력 방식
@@ -45,7 +45,7 @@ print(tokens)
 ### Save the conversation history to a file ###
 log_file = os.path.join(os.getcwd(), "conversation_history.txt")
 total_tokens = tokens[-1]
-last_total_tokens = ReadLastTotalTokens(log_file)
+last_total_tokens = ReadLastTotalTokensFromFile(log_file)
 total_tokens_accumulated = last_total_tokens + total_tokens
 
 with open(log_file, 'a') as f:
