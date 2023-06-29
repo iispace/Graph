@@ -50,7 +50,7 @@ def convert_df_to_bipartite_graph_with_attributes(df, attr_indices, labels):
 
 
 
-def GetNodeAttributes(graph, node_idx, attr_names):
+def NodeAttributesByIndex(graph, node_idx, attr_names):
 """
 graph: Networkx graph object
 node_idx: index number of a given node
@@ -69,3 +69,10 @@ for i in range(len(attr_names)):
 
 return (node_name, attr_values)
 
+
+def NodeAttributes(graph, node_name):
+    """
+    Returns all attributes belonging to a node specified by the node_name
+    """
+    attrs = graph.nodes.data()[node_name]
+    return attrs
