@@ -8,16 +8,18 @@ def row_to_attribute_dict(key_list, value_list):
 
 def convert_df_to_bipartite_graph_with_attributes(df, attr_indices, labels):
   """
-  df: DataFrame
-  attr_indices: a list of two integers.
-                ex: [0,9]
-                The first integer element represents the starting index of the attributes in the given df.
-                The second integer element represents the ending index of the attributes in the given df.
-  labels : a list of three string.
-                ex: ["Users", "Products", "Buy"]
-                The first string element represents the name of the first set of the bipartite graph.
-                The second string element represents the name of the second set of the bipartite graph.
-                The third string element represents the name of the edges(relation) between the two sets of the bipartite graph.
+  Returns a bipartite graph generated from the given dataframe
+  
+      df: DataFrame
+      attr_indices: a list of two integers.
+                    ex: [0,9]
+                    The first integer element represents the starting index of the attributes in the given df.
+                    The second integer element represents the ending index of the attributes in the given df.
+      labels : a list of three string.
+                    ex: ["Users", "Products", "Buy"]
+                    The first string element represents the name of the first set of the bipartite graph.
+                    The second string element represents the name of the second set of the bipartite graph.
+                    The third string element represents the name of the edges(relation) between the two sets of the bipartite graph.
   """   
     start_idx = attr_indices[0]
     end_idx = attr_indices[1]
