@@ -73,6 +73,8 @@ return (node_name, attr_values)
 def NodeAttributes(graph, node_name):
     """
     Returns all attributes belonging to a node specified by the node_name
+
+        node_name: Name of a node
     """
     attrs = graph.nodes.data()[node_name]
     return attrs
