@@ -1,3 +1,11 @@
+def row_to_attribute_dict(key_list, value_list):
+    dict={}
+    for (key, value) in zip(key_list, value_list):
+        #print(key, ": ", value)
+        dict[key] = value
+    return dict
+
+
 def convert_df_to_bipartite_graph_with_attributes(df, attr_indices, labels):
   """
   df: DataFrame
