@@ -54,11 +54,11 @@ def convert_df_to_bipartite_graph_with_attributes(df_feats, df_labels, attr_indi
         B.add_node(sample_id, bipartite = 0,   label=set1_name)        
         nx.set_node_attributes(B, attrs_dict) 
 
-        # edge 생성
+        # edge generation
         for species in df_labels.columns[:]:
-            cell_count = df_labels.loc[sample_id][species] 
-            if (cell_count > 0):
-                B.add_edge(sample_id, species, weight=cell_count, label=edge_name)
+            value = df_labels.loc[sample_id][species] 
+            if (value > 0):
+                B.add_edge(sample_id, species, weight=value, label=edge_name)
 
     return B
 
