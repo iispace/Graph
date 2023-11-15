@@ -6,48 +6,60 @@ def row_to_attribute_dict(key_list, value_list):
     return dict
 
 
-def convert_df_to_bipartite_graph_with_attributes(df, attr_indices, labels):
+def convert_df_to_bipartite_graph_with_attributes(df_feats, df_labels, attr_indices, labels):
   """
-  Returns a bipartite graph generated from the given dataframe
+  Returns a bipartite graph generated from the given two dataframes.
   
-      df: DataFrame
-      attr_indices: a list of two integers.
+  One group of nodes will be created based on the index of df_feats, 
+  and the other gorup of nodes will be created based on the columns of df_labels.
+  
+      1. df_feats : feature dataframe  
+      2. df_labels: labels dataframe  
+      3. attr_indices: a list of two integers.
                     ex: [0,9]
                     The first integer element represents the starting index of the attributes in the given df.
                     The second integer element represents the ending index of the attributes in the given df.
-      labels : a list of three string.
+      4. labels : a list of three string.
                     ex: ["Users", "Products", "Buy"]
                     The first string element represents the name of the first set of the bipartite graph.
                     The second string element represents the name of the second set of the bipartite graph.
                     The third string element represents the name of the edges(relation) between the two sets of the bipartite graph.
   """   
-    start_idx = attr_indices[0]
-    end_idx = attr_indices[1]
-    set1_label = labels[0]
-    set2_label = labels[1]
-    edge_label = labels[2]
+    set1_name = structure[0]; set2_name = structure[1]; edge_name = structure[2]
+    attr_start_idx = attr_indices[0]; attr_end_idx = attr_indices[1]
 
     B = nx.Graph()
-    
-    for i in df.index:
-        attributes = df.loc[i][start_idx:end_idx+1]  # range of df columns that are used as node attributes 
-        att_names = attributes.index.to_list()
-        att_values = attributes.values
-        att_dict = row_to_attribute_dict(att_names, att_values)
-        att_dict["bipartite"] = 0
-        attrs = {}
-        attrs[i] = att_dict
-        #B.add_node(i, bipartite = 0)          # Add node to the first set of the bipartite graph
-        #B.add_node(i)
-        B.add_node(i, label=set1_label)
-        nx.set_node_attributes(B, attrs)       # Add node attributes
-      
-        for j in df.columns[end_idx+1:]:  
-            #B.add_node(j, bipartite= 1)       # Add node to the second set of the bipartite graph
-            B.add_node(j, bipartite=1, label=set2_label)  
-            if (df.loc[i, j] > 0):
-                #B.add_edge(i, j, weight=df.loc[i, j])
-                B.add_edge(i, j, weight=df.loc[i, j], label=edge_label)
+
+    # nodes creation from df_labels (bipartite group 1) 
+    for species in df_labels.columns[:]:
+        B.add_node(species, bipartite = 1, label=set2_name)
+        # nx.set_node_attributes() 
+
+    for sample_id in df_feats.index:  # i: Sample_ID
+        attributes = df_feats.loc[sample_id][attr_start_idx: attr_end_idx + 1]  #  Return pd.Series 
+        attr_names = attributes.index.to_list() 
+        attr_values = attributes.values         # Return np.array 1D
+        
+        #####################################################################
+        # a nested dictionary object is required for nx.set_node_attributes() 
+        name_value_dict = {}
+        for (key, value) in zip(attr_names, attr_values):
+            name_value_dict[key] = value    
+        
+        attrs_dict = {}
+        attrs_dict[sample_id] = name_value_dict 
+        #####################################################################
+       
+        # nodes creation from df_feats (bipartite group 0) 
+        B.add_node(sample_id, bipartite = 0,   label=set1_name)        
+        nx.set_node_attributes(B, attrs_dict) 
+
+        # edge 생성
+        for species in df_labels.columns[:]:
+            cell_count = df_labels.loc[sample_id][species] 
+            if (cell_count > 0):
+                B.add_edge(sample_id, species, weight=cell_count, label=edge_name)
+
     return B
 
 
